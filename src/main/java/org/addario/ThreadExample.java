@@ -49,7 +49,7 @@ public class ThreadExample {
         @Override
         public void run() {
             Map<String, Long> localCounts = new Hashtable<>();
-            System.out.printf("\n[%s] Processing batch...", Thread.currentThread().getName());
+            System.out.printf("[%s] Processing batch...\n", Thread.currentThread().getName());
 
             for (String name : batch) {
                 localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
