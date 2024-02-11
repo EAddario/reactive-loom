@@ -24,16 +24,17 @@ public class CompletableFutureExample {
 
     private static CompletableFuture<Map<String, Long>> prepareBatch(List<String> namesList, int batchStart, int batchSize) {
         return CompletableFuture.supplyAsync(() -> {
-            Map<String, Long> localCounts = new ConcurrentHashMap<>();
-            int batchEnd = Math.min((batchStart + batchSize), namesList.size());
-            System.out.printf("[%s] Processing batch... \n", Thread.currentThread().getName());
+                    Map<String, Long> localCounts = new ConcurrentHashMap<>();
+                    int batchEnd = Math.min((batchStart + batchSize), namesList.size());
+                    System.out.printf("[%s] Processing batch... \n", Thread.currentThread().getName());
 
-            for (String name : namesList.subList(batchStart, batchEnd)) {
-                localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
-            }
+                    for (String name : namesList.subList(batchStart, batchEnd)) {
+                        localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
+                    }
 
-            return localCounts;
-        });
+                    return localCounts;
+                }
+        );
     }
 
     public String getName(int quantity, int batchSize) throws InterruptedException {
