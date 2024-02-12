@@ -6,9 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ThreadExample {
-    public String getName(int quantity, int batchSize) throws InterruptedException {
-        var namesList = new Util().getNames(quantity);
-
+    public String getName(List<String> namesList, int batchSize) throws InterruptedException {
         // Aggregate counts
         ArrayList<CountTask> tasks = new ArrayList<>();
         Map<String, Long> finalCounts = new Hashtable<>();
@@ -49,7 +47,7 @@ public class ThreadExample {
         @Override
         public void run() {
             Map<String, Long> localCounts = new Hashtable<>();
-            System.out.printf("[%s] Processing batch...\n", Thread.currentThread().getName());
+            //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
 
             for (String name : batch) {
                 localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);

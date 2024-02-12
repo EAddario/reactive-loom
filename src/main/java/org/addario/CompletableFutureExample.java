@@ -15,7 +15,7 @@ public class CompletableFutureExample {
     }
 
     private static Map<String, Long> mergeCounts(Map<String, Long> stringLongMap, Map<String, Long> stringLongMap2) {
-        System.out.printf("[%s] Merging counts... \n", Thread.currentThread().getName());
+        //System.out.println(STR."[\{Thread.currentThread().getName()}] Merging counts...");
 
         Map<String, Long> accumulator = new HashMap<>(stringLongMap);
         stringLongMap2.forEach((key, value) -> accumulator.compute(key, (n, c) -> c == null ? value : c + value));
@@ -26,7 +26,7 @@ public class CompletableFutureExample {
         return CompletableFuture.supplyAsync(() -> {
                     Map<String, Long> localCounts = new ConcurrentHashMap<>();
                     int batchEnd = Math.min((batchStart + batchSize), namesList.size());
-                    System.out.printf("[%s] Processing batch... \n", Thread.currentThread().getName());
+                    //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
 
                     for (String name : namesList.subList(batchStart, batchEnd)) {
                         localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
@@ -37,9 +37,7 @@ public class CompletableFutureExample {
         );
     }
 
-    public String getName(int quantity, int batchSize) throws InterruptedException {
-        var namesList = new Util().getNames(quantity);
-
+    public String getName(List<String> namesList, int batchSize) {
         // Split into batches
         CompletableFuture<Map<String, Long>> finalCountsFuture =
                 IntStream.iterate(0, batchStart -> batchStart < namesList.size(), batchStart -> batchStart + batchSize)

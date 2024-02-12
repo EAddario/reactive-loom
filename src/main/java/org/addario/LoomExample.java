@@ -13,7 +13,7 @@ public class LoomExample {
         return () -> {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
             int batchEnd = Math.min((batchStart + batchSize), namesList.size());
-            System.out.printf("[virtual=%s] Processing batch... \n", Thread.currentThread().isVirtual());
+            //System.out.println(STR."[virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
             for (String name : namesList.subList(batchStart, batchEnd)) {
                 localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
@@ -23,8 +23,7 @@ public class LoomExample {
         };
     }
 
-    public String getName(int quantity, int batchSize) {
-        var namesList = new Util().getNames(quantity);
+    public String getName(List<String> namesList, int batchSize) {
         try (var scope = new BatchScope()) {
             IntStream.iterate(0, batchStart -> batchStart < namesList.size(), batchStart -> batchStart + batchSize)
                     .mapToObj(batchStart -> prepareBatch(namesList, batchStart, batchSize))

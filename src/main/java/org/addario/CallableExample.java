@@ -10,10 +10,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class CallableExample {
-    public String getName(int quantity, int batchSize) throws InterruptedException {
-        var namesList = new Util().getNames(quantity);
+    public String getName(List<String> namesList, int batchSize) throws InterruptedException {
         int parallelism = (int) Math.ceil(namesList.size() / (double) batchSize);
-        System.out.println("Parallelism is " + parallelism);
+        //System.out.println(STR."Parallelism is \{parallelism}");
 
         ExecutorService executorService = Executors.newFixedThreadPool(
                 Runtime.getRuntime().availableProcessors(),
@@ -57,7 +56,7 @@ public class CallableExample {
         @Override
         public Void call() {
             Map<String, Long> localCounts = new HashMap<>();
-            System.out.printf("[%s] Processing batch... \n", Thread.currentThread().getName());
+            //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
 
             for (String name : batch) {
                 localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);

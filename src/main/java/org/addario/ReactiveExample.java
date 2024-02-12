@@ -13,9 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class ReactiveExample {
-    public String getName(int quantity, int batchSize) throws InterruptedException {
-        var namesList = new Util().getNames(quantity);
-
+    public String getName(List<String> namesList, int batchSize) throws InterruptedException {
         var finalCounts = Flux.fromIterable(namesList)
                 // Split to batches
                 .buffer(batchSize)
@@ -40,7 +38,7 @@ public class ReactiveExample {
                 .groupBy(Function.identity())
                 .flatMap(group -> group.count().map(count -> Tuples.of(group.key(), count)))
                 .collectMap(Tuple2::getT1, Tuple2::getT2)
-                .doOnSubscribe(__ -> System.out.printf("[%s] Processing batch... \n", Thread.currentThread().getName()))
+                //.doOnSubscribe(__ -> System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch..."))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 }
