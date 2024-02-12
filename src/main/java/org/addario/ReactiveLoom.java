@@ -44,5 +44,11 @@ public class ReactiveLoom {
         stop = System.currentTimeMillis();
         System.out.println("Time: " + (stop - start) + "ms");
         System.out.println("-----------------------------------------------------------------------------------------");
+
+        var loomExample = new LoomExample();
+        start = System.currentTimeMillis();
+        System.out.println("The most frequent loomExample name is " + loomExample.getName(quantity, batchSize));
+        stop = System.currentTimeMillis();
+        System.out.println("Time: " + (stop - start) + "ms");
     }
 }
