@@ -1,10 +1,10 @@
 package org.addario;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.stream.IntStream;
 
@@ -23,7 +23,7 @@ public class LoomExample {
         };
     }
 
-    public String getName(int quantity, int batchSize) throws InterruptedException {
+    public String getName(int quantity, int batchSize) {
         var namesList = new Util().getNames(quantity);
         try (var scope = new BatchScope()) {
             IntStream.iterate(0, batchStart -> batchStart < namesList.size(), batchStart -> batchStart + batchSize)
@@ -34,7 +34,7 @@ public class LoomExample {
             return scope.mostFrequentName();
         }
         catch (Exception e) {
-            return "Error: " + e.getMessage();
+            return STR."Error: \{e.getMessage()}";
         }
     }
 
@@ -42,8 +42,15 @@ public class LoomExample {
         private final ConcurrentHashMap<String, Long> result = new ConcurrentHashMap<>();
 
         @Override
-        protected void handleComplete(Future<Map<String, Long>> future) {
-            final var intermediateResult = future.resultNow();
+        protected void handleComplete(Subtask<? extends Map<String, Long>> subtask) {
+            Map<String, Long> intermediateResult = new HashMap<>();
+
+            switch (subtask.state()) {
+                case UNAVAILABLE -> System.out.println("Error: Subtask is unavailable");
+                case SUCCESS -> intermediateResult = subtask.get();
+                case FAILED -> System.out.println(STR."Error: \{subtask.exception().getMessage()}");
+            }
+
             for (var stringLongEntry : intermediateResult.entrySet()) {
                 result.compute(stringLongEntry.getKey(), (n, c) -> updateCount(stringLongEntry.getValue(), c));
             }
