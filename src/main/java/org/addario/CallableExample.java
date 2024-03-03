@@ -8,10 +8,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CallableExample {
-    public String getName(List<String> namesList, int batchSize) throws InterruptedException {
-        int parallelism = (int) Math.ceil(namesList.size() / (double) batchSize);
+    public String getName(List<String> list, int batchSize) throws InterruptedException {
+        int parallelism = (int) Math.ceil(list.size() / (double) batchSize);
         //System.out.println(STR."Parallelism is \{parallelism}");
 
         ExecutorService executorService = Executors.newFixedThreadPool(
@@ -27,9 +29,9 @@ public class CallableExample {
         Map<String, Long> finalCounts = new ConcurrentHashMap<>();
         List<Callable<Void>> tasks = new ArrayList<>();
 
-        for (int i = 0; i < namesList.size(); i += batchSize) {
-            int batchEnd = Math.min((i + batchSize), namesList.size());
-            final List<String> batch = namesList.subList(i, batchEnd);
+        for (int i = 0; i < list.size(); i += batchSize) {
+            int batchEnd = Math.min((i + batchSize), list.size());
+            final List<String> batch = list.subList(i, batchEnd);
             tasks.add(new CountTask(batch, finalCounts));
         }
 
@@ -47,6 +49,7 @@ public class CallableExample {
     private static class CountTask implements Callable<Void> {
         private final List<String> batch;
         private final Map<String, Long> finalCounts;
+        private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
         private CountTask(List<String> batch, Map<String, Long> finalCounts) {
             this.batch = batch;
@@ -59,7 +62,9 @@ public class CallableExample {
             //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
 
             for (String name : batch) {
-                localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.find())
+                    localCounts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
             }
 
             for (Map.Entry<String, Long> stringLongEntry : localCounts.entrySet()) {

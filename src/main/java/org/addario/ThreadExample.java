@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ThreadExample {
-    public String getName(List<String> namesList, int batchSize) throws InterruptedException {
+    public String getName(List<String> list, int batchSize) throws InterruptedException {
         // Aggregate counts
         ArrayList<CountTask> tasks = new ArrayList<>();
         Map<String, Long> finalCounts = new Hashtable<>();
 
-        for (int i = 0; i < namesList.size(); i += batchSize) {
-            int batchEnd = Math.min((i + batchSize), namesList.size());
-            final List<String> batch = namesList.subList(i, batchEnd);
+        for (int i = 0; i < list.size(); i += batchSize) {
+            int batchEnd = Math.min((i + batchSize), list.size());
+            final List<String> batch = list.subList(i, batchEnd);
 
             // Split into batches
             final CountTask task = new CountTask(batch, finalCounts);
@@ -36,6 +38,7 @@ public class ThreadExample {
     }
 
     private static class CountTask extends Thread {
+        private final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
         private final List<String> batch;
         private final Map<String, Long> finalCounts;
 
@@ -50,7 +53,9 @@ public class ThreadExample {
             //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
 
             for (String name : batch) {
-                localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.find())
+                    localCounts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
             }
 
             for (Map.Entry<String, Long> stringLongEntry : localCounts.entrySet()) {

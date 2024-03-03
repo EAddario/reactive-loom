@@ -11,10 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReactiveExample {
-    public String getName(List<String> namesList, int batchSize) throws InterruptedException {
-        var finalCounts = Flux.fromIterable(namesList)
+    private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
+
+    public String getName(List<String> list, int batchSize) throws InterruptedException {
+        var finalCounts = Flux.fromIterable(list)
                 // Split to batches
                 .buffer(batchSize)
                 // Aggregate intermediate counts asynchronously
@@ -35,6 +39,9 @@ public class ReactiveExample {
     private static Mono<Map<String, Long>> processBatch(List<String> batch) {
 
         return Flux.fromIterable(batch)
+                .map(pattern::matcher)
+                .filter(Matcher::find)
+                .map(Matcher::group)
                 .groupBy(Function.identity())
                 .flatMap(group -> group.count().map(count -> Tuples.of(group.key(), count)))
                 .collectMap(Tuple2::getT1, Tuple2::getT2)

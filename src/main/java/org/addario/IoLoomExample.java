@@ -6,8 +6,12 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.StructuredTaskScope;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class IoLoomExample {
+    private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
+
     public String getName(String fileName, int batchSize) {
         try (var batchScope = new BatchScope()) {
             try (var lines = Files.lines(Paths.get(fileName))) {
@@ -41,7 +45,9 @@ public class IoLoomExample {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
             //System.out.println(STR."\{LocalDateTime.now()}: [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
             for (String name : batch) {
-                localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.find())
+                    localCounts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
             }
             return localCounts;
         };

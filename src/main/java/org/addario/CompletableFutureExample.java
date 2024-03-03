@@ -5,9 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class CompletableFutureExample {
+    private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
+
     private static CompletableFuture<Map<String, Long>> combineFeatures(
             CompletableFuture<Map<String, Long>> firstFeature,
             CompletableFuture<Map<String, Long>> secondFeature) {
@@ -22,14 +26,16 @@ public class CompletableFutureExample {
         return accumulator;
     }
 
-    private static CompletableFuture<Map<String, Long>> prepareBatch(List<String> namesList, int batchStart, int batchSize) {
+    private static CompletableFuture<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
         return CompletableFuture.supplyAsync(() -> {
                     Map<String, Long> localCounts = new ConcurrentHashMap<>();
-                    int batchEnd = Math.min((batchStart + batchSize), namesList.size());
+                    int batchEnd = Math.min((batchStart + batchSize), list.size());
                     //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
 
-                    for (String name : namesList.subList(batchStart, batchEnd)) {
-                        localCounts.compute(name, (n, c) -> c == null ? 1L : c + 1);
+                    for (String name : list.subList(batchStart, batchEnd)) {
+                        Matcher matcher = pattern.matcher(name);
+                        if (matcher.find())
+                            localCounts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
                     }
 
                     return localCounts;
@@ -37,11 +43,11 @@ public class CompletableFutureExample {
         );
     }
 
-    public String getName(List<String> namesList, int batchSize) {
+    public String getName(List<String> list, int batchSize) {
         // Split into batches
         CompletableFuture<Map<String, Long>> finalCountsFuture =
-                IntStream.iterate(0, batchStart -> batchStart < namesList.size(), batchStart -> batchStart + batchSize)
-                        .mapToObj(batchStart -> prepareBatch(namesList, batchStart, batchSize))
+                IntStream.iterate(0, batchStart -> batchStart < list.size(), batchStart -> batchStart + batchSize)
+                        .mapToObj(batchStart -> prepareBatch(list, batchStart, batchSize))
                         .reduce(CompletableFutureExample::combineFeatures)
                         .get();
 
