@@ -7,13 +7,13 @@
     <groupId>org.addario</groupId>
     <artifactId>reactiveLoom</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <description>Project Reactor and Loom together</description>
+    <description>Comparing Project Reactor vs Loom and getting them to work together</description>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <reactor-core.version>3.6.2</reactor-core.version>
+        <reactor-core.version>3.6.3</reactor-core.version>
         <reactor-extra.version>3.5.1</reactor-extra.version>
     </properties>
 
@@ -23,7 +23,6 @@
             <artifactId>reactor-core</artifactId>
             <version>${reactor-core.version}</version>
         </dependency>
-
         <dependency>
             <groupId>io.projectreactor.addons</groupId>
             <artifactId>reactor-extra</artifactId>
