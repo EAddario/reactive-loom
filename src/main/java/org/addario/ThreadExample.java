@@ -1,5 +1,6 @@
 package org.addario;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -18,6 +19,7 @@ public class ThreadExample {
             final List<String> batch = list.subList(i, batchEnd);
 
             // Split into batches
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
             final CountTask task = new CountTask(batch, finalCounts);
             tasks.add(task);
             task.setDaemon(true);
@@ -50,7 +52,7 @@ public class ThreadExample {
         @Override
         public void run() {
             Map<String, Long> localCounts = new Hashtable<>();
-            //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
             for (String name : batch) {
                 Matcher matcher = pattern.matcher(name);

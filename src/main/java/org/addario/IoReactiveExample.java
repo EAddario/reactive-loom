@@ -11,6 +11,7 @@ import reactor.util.function.Tuples;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class IoReactiveExample {
                 // Split to batches
                 .buffer(batchSize)
                 .subscribeOn(IO)
-                //.doOnNext(__ -> System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch..."))
+                .doOnNext(__ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch..."))
                 // Aggregate intermediate counts asynchronously
                 .flatMap(IoReactiveExample::processBatch)
                 .reduce(new HashMap<>(), IoReactiveExample::mergeIntermediateCount)
@@ -51,7 +52,7 @@ public class IoReactiveExample {
                 .groupBy(Function.identity())
                 .flatMap(group -> group.count().map(count -> Tuples.of(group.key(), count)))
                 .collectMap(Tuple2::getT1, Tuple2::getT2)
-                //.doOnSubscribe(__ -> System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch..."))
+                .doOnSubscribe(__ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch..."))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 }

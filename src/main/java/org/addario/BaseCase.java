@@ -1,5 +1,6 @@
 package org.addario;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ public class BaseCase {
 
     public String getName(List<String> list) {
         // Aggregate counts
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
         Map<String, Long> counts = new HashMap<>();
         for (String name : list) {
             Matcher matcher = pattern.matcher(name);

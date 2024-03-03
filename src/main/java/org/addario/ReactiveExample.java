@@ -7,6 +7,7 @@ import reactor.math.MathFlux;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class ReactiveExample {
         var finalCounts = Flux.fromIterable(list)
                 // Split to batches
                 .buffer(batchSize)
+                .doOnNext(__ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch..."))
                 // Aggregate intermediate counts asynchronously
                 .flatMap(ReactiveExample::processBatch)
                 .reduce(new HashMap<>(), ReactiveExample::mergeIntermediateCount)
@@ -45,7 +47,7 @@ public class ReactiveExample {
                 .groupBy(Function.identity())
                 .flatMap(group -> group.count().map(count -> Tuples.of(group.key(), count)))
                 .collectMap(Tuple2::getT1, Tuple2::getT2)
-                //.doOnSubscribe(__ -> System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch..."))
+                .doOnSubscribe(__ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch..."))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 }

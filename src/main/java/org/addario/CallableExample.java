@@ -1,5 +1,6 @@
 package org.addario;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,7 @@ public class CallableExample {
         List<Callable<Void>> tasks = new ArrayList<>();
 
         for (int i = 0; i < list.size(); i += batchSize) {
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
             int batchEnd = Math.min((i + batchSize), list.size());
             final List<String> batch = list.subList(i, batchEnd);
             tasks.add(new CountTask(batch, finalCounts));
@@ -59,7 +61,7 @@ public class CallableExample {
         @Override
         public Void call() {
             Map<String, Long> localCounts = new HashMap<>();
-            //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
             for (String name : batch) {
                 Matcher matcher = pattern.matcher(name);

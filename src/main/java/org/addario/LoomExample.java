@@ -1,5 +1,6 @@
 package org.addario;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class LoomExample {
         return () -> {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
             int batchEnd = Math.min((batchStart + batchSize), list.size());
-            //System.out.println(STR."[virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
             for (String name : list.subList(batchStart, batchEnd)) {
                 Matcher matcher = pattern.matcher(name);

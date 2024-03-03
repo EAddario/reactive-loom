@@ -1,5 +1,6 @@
 package org.addario;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class CompletableFutureExample {
     }
 
     private static Map<String, Long> mergeCounts(Map<String, Long> stringLongMap, Map<String, Long> stringLongMap2) {
-        //System.out.println(STR."[\{Thread.currentThread().getName()}] Merging counts...");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Merging counts...");
 
         Map<String, Long> accumulator = new HashMap<>(stringLongMap);
         stringLongMap2.forEach((key, value) -> accumulator.compute(key, (n, c) -> c == null ? value : c + value));
@@ -30,7 +31,7 @@ public class CompletableFutureExample {
         return CompletableFuture.supplyAsync(() -> {
                     Map<String, Long> localCounts = new ConcurrentHashMap<>();
                     int batchEnd = Math.min((batchStart + batchSize), list.size());
-                    //System.out.println(STR."[\{Thread.currentThread().getName()}] Processing batch...");
+                    System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
                     for (String name : list.subList(batchStart, batchEnd)) {
                         Matcher matcher = pattern.matcher(name);

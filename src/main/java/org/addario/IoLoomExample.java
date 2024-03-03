@@ -2,6 +2,7 @@ package org.addario;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,7 +33,7 @@ public class IoLoomExample {
     }
 
     private static ArrayList<String> prepareBatch(int batchSize, Iterator<String> iterator) {
-        //System.out.println(STR."\{LocalDateTime.now()}: [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
         ArrayList<String> batch = new ArrayList<>(batchSize);
         while (iterator.hasNext() && batch.size() < batchSize) {
             batch.add(iterator.next());
@@ -43,7 +44,7 @@ public class IoLoomExample {
     private static Callable<Map<String, Long>> prepareBatchProcessing(List<String> batch) {
         return () -> {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
-            //System.out.println(STR."\{LocalDateTime.now()}: [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
             for (String name : batch) {
                 Matcher matcher = pattern.matcher(name);
                 if (matcher.find())
