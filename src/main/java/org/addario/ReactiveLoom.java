@@ -9,20 +9,22 @@ import java.util.stream.IntStream;
 
 public class ReactiveLoom {
     public static void main(String[] args) throws InterruptedException {
-        var quantity = 1_000_000;
-        var batchSize = 100_000;
+        var quantity = 500_000;
+        var batchSize = 50_000;
         var fileName = STR."\{UUID.randomUUID().toString()}.txt";
         File file = new File(fileName);
         var start = 0L;
         var stop = 0L;
+        var msg = "";
 
         start = System.currentTimeMillis();
         var paymentsList = IntStream.range(0, quantity).mapToObj(_ -> new Payment().toString()).toList();
         stop = System.currentTimeMillis();
-        System.out.println(STR."paymentList with \{quantity} elements created in \{stop - start}ms");
-        System.out.println("-----------------------------------------------------------------------------------------");
+        msg = STR."paymentsList array with \{String.format("%,d", quantity)} elements created in \{String.format("%,d", (stop - start))} ms";
+        System.out.println(msg);
 
         BufferedWriter bufferedWriter = null;
+        start = System.currentTimeMillis();
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(fileName, false));
 
@@ -32,48 +34,55 @@ public class ReactiveLoom {
             bufferedWriter.close();
         } catch (IOException e) {
             System.out.println(STR."Error writing to file \{fileName}: \{e.getMessage()}");
+            if (file.exists())
+                file.delete();
+            System.exit(1);
         }
+        stop = System.currentTimeMillis();
+        msg = STR."paymentsList file with \{String.format("%,d", (file.length() / 1024^2))} MB created in \{String.format("%,d", (stop - start))} ms";
+        System.out.println(msg);
+        System.out.println("-----------------------------------------------------------------------------------------");
 
         var baseCase = new BaseCase();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent baseCase name is \{baseCase.getName(paymentsList)}");
         stop = System.currentTimeMillis();
-        System.out.println(STR.", calculated in \{stop - start}ms");
+        System.out.println(STR.", calculated in \{String.format("%,d", (stop - start))} ms");
         System.out.println("-----------------------------------------------------------------------------------------");
 
         var threadExample = new ThreadExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent threadExample name is \{threadExample.getName(paymentsList, batchSize)}");
         stop = System.currentTimeMillis();
-        System.out.println(STR.", calculated in \{stop - start}ms");
+        System.out.println(STR.", calculated in \{String.format("%,d", (stop - start))} ms");
         System.out.println("-----------------------------------------------------------------------------------------");
 
         var callableExample = new CallableExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent callableExample name is \{callableExample.getName(paymentsList, batchSize)}");
         stop = System.currentTimeMillis();
-        System.out.println(STR.", calculated in \{stop - start}ms");
+        System.out.println(STR.", calculated in \{String.format("%,d", (stop - start))} ms");
         System.out.println("-----------------------------------------------------------------------------------------");
 
         var completableFutureExample = new CompletableFutureExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent completableFutureExample name is \{completableFutureExample.getName(paymentsList, batchSize)}");
         stop = System.currentTimeMillis();
-        System.out.println(STR.", calculated in \{stop - start}ms");
+        System.out.println(STR.", calculated in \{String.format("%,d", (stop - start))} ms");
         System.out.println("-----------------------------------------------------------------------------------------");
 
         var reactiveExample = new ReactiveExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent reactiveExample name is \{reactiveExample.getName(paymentsList, batchSize)}");
         stop = System.currentTimeMillis();
-        System.out.println(STR.", calculated in \{stop - start}ms");
+        System.out.println(STR.", calculated in \{String.format("%,d", (stop - start))} ms");
         System.out.println("-----------------------------------------------------------------------------------------");
 
         var loomExample = new LoomExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent loomExample name is \{loomExample.getName(paymentsList, batchSize)}");
         stop = System.currentTimeMillis();
-        System.out.println(STR.", calculated in \{stop - start}ms");
+        System.out.println(STR.", calculated in \{String.format("%,d", (stop - start))} ms");
         System.out.println("-----------------------------------------------------------------------------------------");
 
         var ioReactiveExample = new IoReactiveExample();
@@ -84,14 +93,14 @@ public class ReactiveLoom {
             System.out.println(STR."Error executing ioReactiveExample: \{e.getMessage()}");
         }
         stop = System.currentTimeMillis();
-        System.out.println(STR.", calculated in \{stop - start}ms");
+        System.out.println(STR.", calculated in \{String.format("%,d", (stop - start))} ms");
         System.out.println("-----------------------------------------------------------------------------------------");
 
         var ioLoomExample = new IoLoomExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent ioLoomExample name is \{ioLoomExample.getName(fileName, batchSize)}");
         stop = System.currentTimeMillis();
-        System.out.println(STR.", calculated in \{stop - start}ms");
+        System.out.println(STR.", calculated in \{String.format("%,d", (stop - start))} ms");
 
         if (file.exists())
             file.delete();
