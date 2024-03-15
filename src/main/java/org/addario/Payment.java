@@ -61,8 +61,8 @@ public record Payment(String batch_id,
                       String resident_type,
                       String purpose_code) {
     static Random r = new Random();
-    static List<String> names = List.of("Ahmad", "Ankush", "Chiamaka", "Daniel", "Ed", "Faris", "Guilherme", "Ian",
-            "Illia", "Jędrzej", "Jonathan", "Leo", "Mark", "Mic", "Nicola", "Sudi", "Tania");
+    static List<String> names = List.of("Ahmad", "Ankush", "Chiamaka", "Chris", "Daniel", "Ed", "Faris", "Guilherme", "Ian",
+            "Illia", "Jędrzej", "Jonathan", "Leo", "Mark", "Mic", "Nicola", "Pato", "Pedro", "Sudi");
 
     public Payment() {
         this(UUID.randomUUID().toString(),
