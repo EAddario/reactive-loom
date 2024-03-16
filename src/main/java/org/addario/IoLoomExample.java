@@ -48,7 +48,7 @@ public class IoLoomExample {
             for (String name : batch) {
                 Matcher matcher = pattern.matcher(name);
                 if (matcher.find())
-                    localCounts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
+                    localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
             }
             return localCounts;
         };
@@ -69,7 +69,7 @@ public class IoLoomExample {
             }
 
             for (var stringLongEntry : intermediateResult.entrySet()) {
-                result.compute(stringLongEntry.getKey(), (n, c) -> updateCount(stringLongEntry.getValue(), c));
+                result.compute(stringLongEntry.getKey(), (_, c) -> updateCount(stringLongEntry.getValue(), c));
             }
         }
 

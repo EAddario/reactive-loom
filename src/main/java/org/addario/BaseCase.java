@@ -17,7 +17,7 @@ public class BaseCase {
         for (String name : list) {
             Matcher matcher = pattern.matcher(name);
             if (matcher.find())
-                counts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
+                counts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
         }
 
         // Find the max count

@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 public class CallableExample {
     public String getName(List<String> list, int batchSize) throws InterruptedException {
-        int parallelism = (int) Math.ceil(list.size() / (double) batchSize);
+        //int parallelism = (int) Math.ceil(list.size() / (double) batchSize);
         //System.out.println(STR."Parallelism is \{parallelism}");
 
         ExecutorService executorService = Executors.newFixedThreadPool(
@@ -48,15 +48,8 @@ public class CallableExample {
                 .getKey();
     }
 
-    private static class CountTask implements Callable<Void> {
-        private final List<String> batch;
-        private final Map<String, Long> finalCounts;
+    private record CountTask(List<String> batch, Map<String, Long> finalCounts) implements Callable<Void> {
         private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
-
-        private CountTask(List<String> batch, Map<String, Long> finalCounts) {
-            this.batch = batch;
-            this.finalCounts = finalCounts;
-        }
 
         @Override
         public Void call() {
@@ -66,7 +59,7 @@ public class CallableExample {
             for (String name : batch) {
                 Matcher matcher = pattern.matcher(name);
                 if (matcher.find())
-                    localCounts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
+                    localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
             }
 
             for (Map.Entry<String, Long> stringLongEntry : localCounts.entrySet()) {

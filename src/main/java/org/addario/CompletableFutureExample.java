@@ -11,39 +11,6 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class CompletableFutureExample {
-    private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
-
-    private static CompletableFuture<Map<String, Long>> combineFeatures(
-            CompletableFuture<Map<String, Long>> firstFeature,
-            CompletableFuture<Map<String, Long>> secondFeature) {
-        return firstFeature.thenCombineAsync(secondFeature, CompletableFutureExample::mergeCounts);
-    }
-
-    private static Map<String, Long> mergeCounts(Map<String, Long> stringLongMap, Map<String, Long> stringLongMap2) {
-        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Merging counts...");
-
-        Map<String, Long> accumulator = new HashMap<>(stringLongMap);
-        stringLongMap2.forEach((key, value) -> accumulator.compute(key, (n, c) -> c == null ? value : c + value));
-        return accumulator;
-    }
-
-    private static CompletableFuture<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
-        return CompletableFuture.supplyAsync(() -> {
-                    Map<String, Long> localCounts = new ConcurrentHashMap<>();
-                    int batchEnd = Math.min((batchStart + batchSize), list.size());
-                    System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
-
-                    for (String name : list.subList(batchStart, batchEnd)) {
-                        Matcher matcher = pattern.matcher(name);
-                        if (matcher.find())
-                            localCounts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
-                    }
-
-                    return localCounts;
-                }
-        );
-    }
-
     public String getName(List<String> list, int batchSize) {
         // Split into batches
         CompletableFuture<Map<String, Long>> finalCountsFuture =
@@ -61,5 +28,38 @@ public class CompletableFutureExample {
                 .max(Map.Entry.comparingByValue())
                 .get()
                 .getKey();
+    }
+
+    private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
+
+    private static CompletableFuture<Map<String, Long>> combineFeatures(
+            CompletableFuture<Map<String, Long>> firstFeature,
+            CompletableFuture<Map<String, Long>> secondFeature) {
+        return firstFeature.thenCombineAsync(secondFeature, CompletableFutureExample::mergeCounts);
+    }
+
+    private static Map<String, Long> mergeCounts(Map<String, Long> stringLongMap, Map<String, Long> stringLongMap2) {
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Merging counts...");
+
+        Map<String, Long> accumulator = new HashMap<>(stringLongMap);
+        stringLongMap2.forEach((key, value) -> accumulator.compute(key, (_, c) -> c == null ? value : c + value));
+        return accumulator;
+    }
+
+    private static CompletableFuture<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
+        return CompletableFuture.supplyAsync(() -> {
+                    Map<String, Long> localCounts = new ConcurrentHashMap<>();
+                    int batchEnd = Math.min((batchStart + batchSize), list.size());
+                    System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+
+                    for (String name : list.subList(batchStart, batchEnd)) {
+                        Matcher matcher = pattern.matcher(name);
+                        if (matcher.find())
+                            localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
+                    }
+
+                    return localCounts;
+                }
+        );
     }
 }

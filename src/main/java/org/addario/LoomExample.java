@@ -14,22 +14,6 @@ import java.util.stream.IntStream;
 public class LoomExample {
     private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
-    private static Callable<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
-        return () -> {
-            Map<String, Long> localCounts = new ConcurrentHashMap<>();
-            int batchEnd = Math.min((batchStart + batchSize), list.size());
-            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
-
-            for (String name : list.subList(batchStart, batchEnd)) {
-                Matcher matcher = pattern.matcher(name);
-                if (matcher.find())
-                    localCounts.compute(matcher.group(), (n, c) -> c == null ? 1L : c + 1);
-            }
-
-            return localCounts;
-        };
-    }
-
     public String getName(List<String> list, int batchSize) {
         try (var scope = new BatchScope()) {
             IntStream.iterate(0, batchStart -> batchStart < list.size(), batchStart -> batchStart + batchSize)
@@ -41,6 +25,22 @@ public class LoomExample {
         } catch (Exception e) {
             return STR."Error: \{e.getMessage()}";
         }
+    }
+
+    private static Callable<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
+        return () -> {
+            Map<String, Long> localCounts = new ConcurrentHashMap<>();
+            int batchEnd = Math.min((batchStart + batchSize), list.size());
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+
+            for (String name : list.subList(batchStart, batchEnd)) {
+                Matcher matcher = pattern.matcher(name);
+                if (matcher.find())
+                    localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
+            }
+
+            return localCounts;
+        };
     }
 
     private static class BatchScope extends StructuredTaskScope<Map<String, Long>> {
@@ -57,7 +57,7 @@ public class LoomExample {
             }
 
             for (var stringLongEntry : intermediateResult.entrySet()) {
-                result.compute(stringLongEntry.getKey(), (n, c) -> updateCount(stringLongEntry.getValue(), c));
+                result.compute(stringLongEntry.getKey(), (_, c) -> updateCount(stringLongEntry.getValue(), c));
             }
         }
 

@@ -26,7 +26,7 @@ public class TimedExecution {
         String msg;
         long start;
         System.out.println("----------------------------------------------------------------------- paymentsList file");
-        BufferedWriter bufferedWriter = null;
+        BufferedWriter bufferedWriter;
         start = System.currentTimeMillis();
         try {
             bufferedWriter = new BufferedWriter(new FileWriter(fileName, false));
