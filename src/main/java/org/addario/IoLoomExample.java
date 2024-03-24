@@ -7,7 +7,6 @@ import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.StructuredTaskScope;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IoLoomExample {
@@ -18,16 +17,20 @@ public class IoLoomExample {
             try (var lines = Files.lines(Paths.get(fileName))) {
                 final var iterator = lines.iterator();
                 try (var fileReadingScope = new StructuredTaskScope.ShutdownOnFailure()) {
+
                     while (iterator.hasNext()) {
                         final var batchFuture = fileReadingScope.fork(() -> prepareBatch(batchSize, iterator));
                         fileReadingScope.join();
                         batchScope.fork(prepareBatchProcessing(batchFuture.get()));
                     }
+
                 }
             }
             batchScope.join();
+
             return batchScope.mostFrequentName();
         } catch (Exception e) {
+
             return STR."Error: \{e.getMessage()}";
         }
     }
@@ -35,9 +38,11 @@ public class IoLoomExample {
     private static ArrayList<String> prepareBatch(int batchSize, Iterator<String> iterator) {
         System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
         ArrayList<String> batch = new ArrayList<>(batchSize);
+
         while (iterator.hasNext() && batch.size() < batchSize) {
             batch.add(iterator.next());
         }
+
         return batch;
     }
 
@@ -45,17 +50,18 @@ public class IoLoomExample {
         return () -> {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
             System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
-            for (String name : batch) {
-                Matcher matcher = pattern.matcher(name);
+
+            for (var name : batch) {
+                var matcher = pattern.matcher(name);
                 if (matcher.find())
                     localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
             }
+
             return localCounts;
         };
     }
 
     private static class BatchScope extends StructuredTaskScope<Map<String, Long>> {
-
         private final ConcurrentHashMap<String, Long> result = new ConcurrentHashMap<>();
 
         @Override

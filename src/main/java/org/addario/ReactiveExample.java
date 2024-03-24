@@ -33,13 +33,12 @@ public class ReactiveExample {
                 .block();
     }
 
-    private static HashMap<String, Long> mergeIntermediateCount(HashMap<String, Long> acc, Map<String, Long> intermediateResult) {
-        intermediateResult.forEach((name, intermediateCount) -> acc.merge(name, intermediateCount, Long::sum));
-        return acc;
+    private static HashMap<String, Long> mergeIntermediateCount(HashMap<String, Long> totalCount, Map<String, Long> intermediateResult) {
+        intermediateResult.forEach((name, intermediateCount) -> totalCount.merge(name, intermediateCount, Long::sum));
+        return totalCount;
     }
 
     private static Mono<Map<String, Long>> processBatch(List<String> batch) {
-
         return Flux.fromIterable(batch)
                 .map(pattern::matcher)
                 .filter(Matcher::find)

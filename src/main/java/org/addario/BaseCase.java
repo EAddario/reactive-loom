@@ -14,6 +14,7 @@ public class BaseCase {
         // Aggregate counts
         System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
         Map<String, Long> counts = new HashMap<>();
+
         for (String name : list) {
             Matcher matcher = pattern.matcher(name);
             if (matcher.find())

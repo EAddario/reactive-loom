@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ThreadExample {
@@ -14,13 +13,13 @@ public class ThreadExample {
         ArrayList<CountTask> tasks = new ArrayList<>();
         Map<String, Long> finalCounts = new Hashtable<>();
 
-        for (int i = 0; i < list.size(); i += batchSize) {
-            int batchEnd = Math.min((i + batchSize), list.size());
-            final List<String> batch = list.subList(i, batchEnd);
+        for (var i = 0; i < list.size(); i += batchSize) {
+            var batchEnd = Math.min((i + batchSize), list.size());
+            final var batch = list.subList(i, batchEnd);
 
             // Split into batches
             System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
-            final CountTask task = new CountTask(batch, finalCounts);
+            final var task = new CountTask(batch, finalCounts);
             tasks.add(task);
             task.setDaemon(true);
             task.start();
@@ -54,15 +53,15 @@ public class ThreadExample {
             Map<String, Long> localCounts = new Hashtable<>();
             System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
-            for (String name : batch) {
-                Matcher matcher = pattern.matcher(name);
+            for (var name : batch) {
+                var matcher = pattern.matcher(name);
                 if (matcher.find())
                     localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
             }
 
-            for (Map.Entry<String, Long> stringLongEntry : localCounts.entrySet()) {
+            for (var stringLongEntry : localCounts.entrySet()) {
                 synchronized (finalCounts) {
-                    final Long existingCount = finalCounts.get(stringLongEntry.getKey());
+                    final var existingCount = finalCounts.get(stringLongEntry.getKey());
                     final var newCount = stringLongEntry.getValue();
 
                     if (existingCount == null) {
@@ -70,6 +69,7 @@ public class ThreadExample {
                     } else {
                         finalCounts.put(stringLongEntry.getKey(), existingCount + newCount);
                     }
+
                 }
             }
 

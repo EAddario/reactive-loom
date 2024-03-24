@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +16,7 @@ public class CallableExample {
         //int parallelism = (int) Math.ceil(list.size() / (double) batchSize);
         //System.out.println(STR."Parallelism is \{parallelism}");
 
-        ExecutorService executorService = Executors.newFixedThreadPool(
+        var executorService = Executors.newFixedThreadPool(
                 Runtime.getRuntime().availableProcessors(),
                 runnable -> {
                     Thread t = new Thread(runnable);
@@ -32,7 +31,7 @@ public class CallableExample {
 
         for (int i = 0; i < list.size(); i += batchSize) {
             System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
-            int batchEnd = Math.min((i + batchSize), list.size());
+            var batchEnd = Math.min((i + batchSize), list.size());
             final List<String> batch = list.subList(i, batchEnd);
             tasks.add(new CountTask(batch, finalCounts));
         }
@@ -66,11 +65,13 @@ public class CallableExample {
                 synchronized (finalCounts) {
                     final Long existingCount = finalCounts.get(stringLongEntry.getKey());
                     final var newCount = stringLongEntry.getValue();
+
                     if (existingCount == null) {
                         finalCounts.put(stringLongEntry.getKey(), newCount);
                     } else {
                         finalCounts.put(stringLongEntry.getKey(), existingCount + newCount);
                     }
+
                 }
             }
 

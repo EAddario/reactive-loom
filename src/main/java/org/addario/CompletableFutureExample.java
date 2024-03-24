@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -35,6 +34,7 @@ public class CompletableFutureExample {
     private static CompletableFuture<Map<String, Long>> combineFeatures(
             CompletableFuture<Map<String, Long>> firstFeature,
             CompletableFuture<Map<String, Long>> secondFeature) {
+
         return firstFeature.thenCombineAsync(secondFeature, CompletableFutureExample::mergeCounts);
     }
 
@@ -43,17 +43,19 @@ public class CompletableFutureExample {
 
         Map<String, Long> accumulator = new HashMap<>(stringLongMap);
         stringLongMap2.forEach((key, value) -> accumulator.compute(key, (_, c) -> c == null ? value : c + value));
+
         return accumulator;
     }
 
     private static CompletableFuture<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
         return CompletableFuture.supplyAsync(() -> {
                     Map<String, Long> localCounts = new ConcurrentHashMap<>();
-                    int batchEnd = Math.min((batchStart + batchSize), list.size());
+                    var batchEnd = Math.min((batchStart + batchSize), list.size());
                     System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
                     for (String name : list.subList(batchStart, batchEnd)) {
-                        Matcher matcher = pattern.matcher(name);
+                        var matcher = pattern.matcher(name);
+
                         if (matcher.find())
                             localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
                     }

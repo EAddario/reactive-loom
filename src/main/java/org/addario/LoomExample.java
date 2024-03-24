@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.StructuredTaskScope;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
@@ -19,8 +18,8 @@ public class LoomExample {
             IntStream.iterate(0, batchStart -> batchStart < list.size(), batchStart -> batchStart + batchSize)
                     .mapToObj(batchStart -> prepareBatch(list, batchStart, batchSize))
                     .forEach(scope::fork);
-
             scope.join();
+
             return scope.mostFrequentName();
         } catch (Exception e) {
             return STR."Error: \{e.getMessage()}";
@@ -30,11 +29,12 @@ public class LoomExample {
     private static Callable<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
         return () -> {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
-            int batchEnd = Math.min((batchStart + batchSize), list.size());
+            var batchEnd = Math.min((batchStart + batchSize), list.size());
             System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
             for (String name : list.subList(batchStart, batchEnd)) {
-                Matcher matcher = pattern.matcher(name);
+                var matcher = pattern.matcher(name);
+
                 if (matcher.find())
                     localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
             }
