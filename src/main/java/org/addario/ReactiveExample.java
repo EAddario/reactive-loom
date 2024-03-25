@@ -2,6 +2,7 @@ package org.addario;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.math.MathFlux;
 import reactor.util.function.Tuple2;
@@ -16,15 +17,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReactiveExample {
+    private static final Scheduler aggregator = Schedulers.newParallel("Aggregator");
     private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
     public String getName(List<String> list, int batchSize) throws InterruptedException {
         var finalCounts = Flux.fromIterable(list)
                 // Split to batches
                 .buffer(batchSize)
+                .parallel()
+                .runOn(aggregator)
                 .doOnNext(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch..."))
                 // Aggregate intermediate counts asynchronously
                 .flatMap(ReactiveExample::processBatch)
+                .sequential()
                 .reduce(new HashMap<>(), ReactiveExample::mergeIntermediateCount)
                 .flatMapIterable(HashMap::entrySet);
 
@@ -47,6 +52,6 @@ public class ReactiveExample {
                 .flatMap(group -> group.count().map(count -> Tuples.of(group.key(), count)))
                 .collectMap(Tuple2::getT1, Tuple2::getT2)
                 .doOnSubscribe(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch..."))
-                .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.parallel());
     }
 }

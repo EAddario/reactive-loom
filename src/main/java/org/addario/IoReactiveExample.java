@@ -20,17 +20,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IoReactiveExample {
-    private static final Scheduler IO = Schedulers.newParallel("IO");
+    private static final Scheduler io = Schedulers.newParallel("IO");
     private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
     public String getName(String fileName, int batchSize) throws IOException {
         var finalCounts = Flux.fromStream(Files.lines(Paths.get(fileName)))
                 // Split to batches
                 .buffer(batchSize)
-                .subscribeOn(IO)
+                .parallel()
+                .runOn(io)
                 .doOnNext(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch..."))
                 // Aggregate intermediate counts asynchronously
                 .flatMap(IoReactiveExample::processBatch)
+                .sequential()
                 .reduce(new HashMap<>(), IoReactiveExample::mergeIntermediateCount)
                 .flatMapIterable(HashMap::entrySet);
 
@@ -54,6 +56,6 @@ public class IoReactiveExample {
                 .flatMap(group -> group.count().map(count -> Tuples.of(group.key(), count)))
                 .collectMap(Tuple2::getT1, Tuple2::getT2)
                 .doOnSubscribe(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch..."))
-                .subscribeOn(Schedulers.boundedElastic());
+                .subscribeOn(Schedulers.parallel());
     }
 }
