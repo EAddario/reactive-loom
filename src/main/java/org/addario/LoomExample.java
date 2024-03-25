@@ -30,7 +30,7 @@ public class LoomExample {
         return () -> {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
             var batchEnd = Math.min((batchStart + batchSize), list.size());
-            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
 
             for (String name : list.subList(batchStart, batchEnd)) {
                 var matcher = pattern.matcher(name);
@@ -49,6 +49,7 @@ public class LoomExample {
         @Override
         protected void handleComplete(Subtask<? extends Map<String, Long>> subtask) {
             Map<String, Long> intermediateResult = new HashMap<>();
+            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
 
             switch (subtask.state()) {
                 case UNAVAILABLE -> System.out.println("Error: Subtask is unavailable");
