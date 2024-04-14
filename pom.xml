@@ -10,23 +10,43 @@
     <description>Comparing Project Reactor vs Loom and getting them to work together</description>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <reactor-core.version>3.6.3</reactor-core.version>
-        <reactor-extra.version>3.5.1</reactor-extra.version>
+        <blockhound.version>1.0.8.RELEASE</blockhound.version>
+        <exec.mainClass>org.addario.ReactiveLoom</exec.mainClass>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.projectreactor</groupId>
+                <artifactId>reactor-bom</artifactId>
+                <version>2023.0.5</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-core</artifactId>
-            <version>${reactor-core.version}</version>
         </dependency>
         <dependency>
             <groupId>io.projectreactor.addons</groupId>
             <artifactId>reactor-extra</artifactId>
-            <version>${reactor-extra.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-tools</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.projectreactor.tools/blockhound -->
+        <dependency>
+            <groupId>io.projectreactor.tools</groupId>
+            <artifactId>blockhound</artifactId>
+            <version>${blockhound.version}</version>
         </dependency>
     </dependencies>
 
@@ -48,8 +68,11 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.12.1</version>
                     <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
                         <compilerArgs>
                             <arg>--enable-preview</arg>
+                            <arg>-XX:+EnableDynamicAgentLoading</arg>
                         </compilerArgs>
                     </configuration>
                 </plugin>
@@ -86,5 +109,4 @@
             </plugins>
         </pluginManagement>
     </build>
-
 </project>
