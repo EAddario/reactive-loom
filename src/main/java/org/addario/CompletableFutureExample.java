@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class CompletableFutureExample {
+    private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
+
     public String getName(List<String> list, int batchSize) {
         // Split into batches
         CompletableFuture<Map<String, Long>> finalCountsFuture =
@@ -28,8 +30,6 @@ public class CompletableFutureExample {
                 .get()
                 .getKey();
     }
-
-    private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
     private static CompletableFuture<Map<String, Long>> combineFeatures(
             CompletableFuture<Map<String, Long>> firstFeature,
