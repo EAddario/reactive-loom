@@ -10,8 +10,8 @@
     <description>Comparing Project Reactor vs Loom and getting them to work together</description>
 
     <properties>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <blockhound.version>1.0.8.RELEASE</blockhound.version>
         <exec.mainClass>org.addario.ReactiveLoom</exec.mainClass>
@@ -73,6 +73,7 @@
                         <compilerArgs>
                             <arg>--enable-preview</arg>
                             <arg>-XX:+EnableDynamicAgentLoading</arg>
+                            <arg>-XX:+AllowRedefinitionToAddDeleteMethods</arg>
                         </compilerArgs>
                     </configuration>
                 </plugin>
