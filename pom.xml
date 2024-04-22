@@ -72,8 +72,6 @@
                         <target>${maven.compiler.target}</target>
                         <compilerArgs>
                             <arg>--enable-preview</arg>
-                            <arg>-XX:+EnableDynamicAgentLoading</arg>
-                            <arg>-XX:+AllowRedefinitionToAddDeleteMethods</arg>
                         </compilerArgs>
                     </configuration>
                 </plugin>
