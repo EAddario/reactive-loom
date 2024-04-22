@@ -36,7 +36,7 @@ public class LoomExample {
                 var matcher = pattern.matcher(name);
 
                 if (matcher.find())
-                    localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
+                    localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1L);
             }
 
             return localCounts;

@@ -31,6 +31,24 @@ public class CompletableFutureExample {
                 .getKey();
     }
 
+    private static CompletableFuture<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
+        return CompletableFuture.supplyAsync(() -> {
+                    Map<String, Long> localCounts = new ConcurrentHashMap<>();
+                    var batchEnd = Math.min((batchStart + batchSize), list.size());
+                    System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
+
+                    for (String name : list.subList(batchStart, batchEnd)) {
+                        var matcher = pattern.matcher(name);
+
+                        if (matcher.find())
+                            localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1L);
+                    }
+
+                    return localCounts;
+                }
+        );
+    }
+
     private static CompletableFuture<Map<String, Long>> combineFeatures(
             CompletableFuture<Map<String, Long>> firstFeature,
             CompletableFuture<Map<String, Long>> secondFeature) {
@@ -45,23 +63,5 @@ public class CompletableFutureExample {
         stringLongMap2.forEach((key, value) -> accumulator.compute(key, (_, c) -> c == null ? value : c + value));
 
         return accumulator;
-    }
-
-    private static CompletableFuture<Map<String, Long>> prepareBatch(List<String> list, int batchStart, int batchSize) {
-        return CompletableFuture.supplyAsync(() -> {
-                    Map<String, Long> localCounts = new ConcurrentHashMap<>();
-                    var batchEnd = Math.min((batchStart + batchSize), list.size());
-                    System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
-
-                    for (String name : list.subList(batchStart, batchEnd)) {
-                        var matcher = pattern.matcher(name);
-
-                        if (matcher.find())
-                            localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
-                    }
-
-                    return localCounts;
-                }
-        );
     }
 }

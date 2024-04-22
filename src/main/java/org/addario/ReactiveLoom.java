@@ -17,6 +17,7 @@ public class ReactiveLoom {
         ReactorDebugAgent.init(); // Dev friendly reactive stack traces
         BlockHound.install(); // Detect and throw on blocking calls from non-blocking threads
 
+        var start = System.currentTimeMillis();
         var paymentsList = TimedExecution.createPaymentsList(quantity);
         TimedExecution.createPaymentsFile(fileName, paymentsList, file);
         TimedExecution.baseCase(paymentsList);
@@ -27,6 +28,8 @@ public class ReactiveLoom {
         TimedExecution.loom(paymentsList, batchSize);
         TimedExecution.ioReactive(fileName, batchSize);
         TimedExecution.ioLoom(fileName, batchSize);
+        var stop = System.currentTimeMillis();
+        System.out.println(STR."\nFinished ReactiveLoom test with \{String.format("%,d", quantity)} elements in \{String.format("%,d", (stop - start))} ms");
 
         if (file.exists())
             if (file.delete())

@@ -38,11 +38,6 @@ public class ReactiveExample {
                 .block();
     }
 
-    private static HashMap<String, Long> mergeIntermediateCount(HashMap<String, Long> totalCount, Map<String, Long> intermediateResult) {
-        intermediateResult.forEach((name, intermediateCount) -> totalCount.merge(name, intermediateCount, Long::sum));
-        return totalCount;
-    }
-
     private static Mono<Map<String, Long>> processBatch(List<String> batch) {
         return Flux.fromIterable(batch)
                 .map(pattern::matcher)
@@ -53,5 +48,10 @@ public class ReactiveExample {
                 .collectMap(Tuple2::getT1, Tuple2::getT2)
                 .doOnSubscribe(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch..."))
                 .subscribeOn(Schedulers.parallel());
+    }
+
+    private static HashMap<String, Long> mergeIntermediateCount(HashMap<String, Long> totalCount, Map<String, Long> intermediateResult) {
+        intermediateResult.forEach((name, intermediateCount) -> totalCount.merge(name, intermediateCount, Long::sum));
+        return totalCount;
     }
 }

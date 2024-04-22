@@ -58,7 +58,7 @@ public class CallableExample {
             for (String name : batch) {
                 Matcher matcher = pattern.matcher(name);
                 if (matcher.find())
-                    localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1);
+                    localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1L);
             }
 
             for (Map.Entry<String, Long> stringLongEntry : localCounts.entrySet()) {
