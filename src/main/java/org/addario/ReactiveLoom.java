@@ -12,7 +12,7 @@ public class ReactiveLoom {
         var batchSize = 100_000; // quantity / batchSize = how many groups of payments to process in parallel
         var fileName = STR."\{UUID.randomUUID().toString()}.txt"; // Using Java 21 preview features so must be compiled/run with --enable-preview
         var file = new File(fileName); // A file with 2 million records will take around 3.3 GB
-        System.setProperty("reactor.schedulers.defaultBoundedElasticOnVirtualThreads", "true"); // Use virtual threads (projet Loom) in bounded elastic scheduler
+        System.setProperty("reactor.schedulers.defaultBoundedElasticOnVirtualThreads", "true"); // Use virtual threads (project Loom) in bounded elastic scheduler
 
         ReactorDebugAgent.init(); // Dev friendly reactive stack traces
         BlockHound.install(); // Detect and throw on blocking calls from non-blocking threads

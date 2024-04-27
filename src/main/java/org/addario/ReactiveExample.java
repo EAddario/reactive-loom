@@ -48,6 +48,7 @@ public class ReactiveExample {
                 .collectMap(Tuple2::getT1, Tuple2::getT2)
                 .doOnSubscribe(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch..."))
                 .subscribeOn(Schedulers.parallel());
+                //.subscribeOn(Schedulers.boundedElastic());
     }
 
     private static HashMap<String, Long> mergeIntermediateCount(HashMap<String, Long> totalCount, Map<String, Long> intermediateResult) {

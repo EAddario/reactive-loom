@@ -13,9 +13,6 @@ import java.util.regex.Pattern;
 
 public class CallableExample {
     public String getName(List<String> list, int batchSize) throws InterruptedException {
-        //int parallelism = (int) Math.ceil(list.size() / (double) batchSize);
-        //System.out.println(STR."Parallelism is \{parallelism}");
-
         var executorService = Executors.newFixedThreadPool(
                 Runtime.getRuntime().availableProcessors(),
                 runnable -> {
