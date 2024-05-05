@@ -13,7 +13,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <blockhound.version>1.0.8.RELEASE</blockhound.version>
+        <blockhound.version>1.0.9.RELEASE</blockhound.version>
         <exec.mainClass>org.addario.ReactiveLoom</exec.mainClass>
     </properties>
 
