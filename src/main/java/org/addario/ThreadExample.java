@@ -59,15 +59,15 @@ public class ThreadExample {
                     localCounts.compute(matcher.group(), (_, c) -> c == null ? 1L : c + 1L);
             }
 
-            for (var stringLongEntry : localCounts.entrySet()) {
+            for (var mapEntry : localCounts.entrySet()) {
                 synchronized (finalCounts) {
-                    final var existingCount = finalCounts.get(stringLongEntry.getKey());
-                    final var newCount = stringLongEntry.getValue();
+                    final var existingCount = finalCounts.get(mapEntry.getKey());
+                    final var newCount = mapEntry.getValue();
 
                     if (existingCount == null) {
-                        finalCounts.put(stringLongEntry.getKey(), newCount);
+                        finalCounts.put(mapEntry.getKey(), newCount);
                     } else {
-                        finalCounts.put(stringLongEntry.getKey(), existingCount + newCount);
+                        finalCounts.put(mapEntry.getKey(), existingCount + newCount);
                     }
 
                 }
