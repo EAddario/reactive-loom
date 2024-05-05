@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -23,6 +24,7 @@ public class TimedExecution {
 
     static void createPaymentsFile(String fileName, List<String> paymentsList, File file) {
         System.out.println("----------------------------------------------------------------------- paymentsList file");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         BufferedWriter bufferedWriter;
         start = System.currentTimeMillis();
 
@@ -51,6 +53,7 @@ public class TimedExecution {
 
     static void baseCase(List<String> paymentsList) {
         System.out.println("-------------------------------------------------------------------------------- baseCase");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         var baseCase = new BaseCase();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent baseCase name is \{baseCase.getName(paymentsList)}");
@@ -60,6 +63,7 @@ public class TimedExecution {
 
     static void thread(List<String> paymentsList, int batchSize) throws InterruptedException {
         System.out.println("--------------------------------------------------------------------------- threadExample");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         var threadExample = new ThreadExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent threadExample name is \{threadExample.getName(paymentsList, batchSize)}");
@@ -69,6 +73,7 @@ public class TimedExecution {
 
     static void callable(List<String> paymentsList, int batchSize) throws InterruptedException {
         System.out.println("------------------------------------------------------------------------- callableExample");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         var callableExample = new CallableExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent callableExample name is \{callableExample.getName(paymentsList, batchSize)}");
@@ -78,6 +83,7 @@ public class TimedExecution {
 
     static void completableFuture(List<String> paymentsList, int batchSize) {
         System.out.println("---------------------------------------------------------------- completableFutureExample");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         var completableFutureExample = new CompletableFutureExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent completableFutureExample name is \{completableFutureExample.getName(paymentsList, batchSize)}");
@@ -87,6 +93,7 @@ public class TimedExecution {
 
     static void reactive(List<String> paymentsList, int batchSize) throws InterruptedException {
         System.out.println("------------------------------------------------------------------------- reactiveExample");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         var reactiveExample = new ReactiveExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent reactiveExample name is \{reactiveExample.getName(paymentsList, batchSize)}");
@@ -96,6 +103,7 @@ public class TimedExecution {
 
     static void loom(List<String> paymentsList, int batchSize) {
         System.out.println("----------------------------------------------------------------------------- loomExample");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         var loomExample = new LoomExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent loomExample name is \{loomExample.getName(paymentsList, batchSize)}");
@@ -105,6 +113,7 @@ public class TimedExecution {
 
     static void ioReactive(String fileName, int batchSize) {
         System.out.println("----------------------------------------------------------------------- ioReactiveExample");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         var ioReactiveExample = new IoReactiveExample();
         start = System.currentTimeMillis();
 
@@ -120,6 +129,7 @@ public class TimedExecution {
 
     static void ioLoom(String fileName, int batchSize) {
         System.out.println("--------------------------------------------------------------------------- ioLoomExample");
+        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}]");
         var ioLoomExample = new IoLoomExample();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent ioLoomExample name is \{ioLoomExample.getName(fileName, batchSize)}");
