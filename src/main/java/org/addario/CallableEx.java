@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CallableExample {
+public class CallableEx {
     public String getName(List<String> list, int batchSize) throws InterruptedException {
         var executorService = Executors.newFixedThreadPool(
                 Runtime.getRuntime().availableProcessors(),

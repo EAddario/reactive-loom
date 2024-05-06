@@ -7,6 +7,9 @@ import reactor.math.MathFlux;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -15,20 +18,20 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ReactiveExample {
+public class IoReactiveEx {
     private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
-    public String getName(List<String> list, int batchSize) throws InterruptedException {
-        var finalCounts = Flux.fromIterable(list)
+    public String getName(String fileName, int batchSize) throws IOException {
+        var finalCounts = Flux.fromStream(Files.lines(Paths.get(fileName)))
                 // Split to batches
                 .buffer(batchSize)
                 .parallel()
                 .runOn(Schedulers.parallel())
                 .doOnNext(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch..."))
                 // Aggregate intermediate counts asynchronously
-                .flatMap(ReactiveExample::processBatch)
+                .flatMap(IoReactiveEx::processBatch)
                 .sequential()
-                .reduce(new HashMap<>(), ReactiveExample::mergeIntermediateCount)
+                .reduce(new HashMap<>(), IoReactiveEx::mergeIntermediateCount)
                 .flatMapIterable(HashMap::entrySet);
 
         return MathFlux.max(finalCounts, Map.Entry.comparingByValue())
@@ -50,6 +53,7 @@ public class ReactiveExample {
 
     private static HashMap<String, Long> mergeIntermediateCount(HashMap<String, Long> totalCount, Map<String, Long> intermediateResult) {
         intermediateResult.forEach((name, intermediateCount) -> totalCount.merge(name, intermediateCount, Long::sum));
+
         return totalCount;
     }
 }

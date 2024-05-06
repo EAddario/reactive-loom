@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class ThreadExample {
+public class ThreadEx {
     public String getName(List<String> list, int batchSize) throws InterruptedException {
         // Aggregate counts
         ArrayList<CountTask> tasks = new ArrayList<>();

@@ -10,7 +10,7 @@ import java.util.concurrent.StructuredTaskScope;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-public class LoomExample {
+public class LoomEx {
     private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
     public String getName(List<String> list, int batchSize) {

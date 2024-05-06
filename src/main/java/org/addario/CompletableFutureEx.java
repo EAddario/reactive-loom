@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
-public class CompletableFutureExample {
+public class CompletableFutureEx {
     private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
     public String getName(List<String> list, int batchSize) {
@@ -17,7 +17,7 @@ public class CompletableFutureExample {
         CompletableFuture<Map<String, Long>> finalCountsFuture =
                 IntStream.iterate(0, batchStart -> batchStart < list.size(), batchStart -> batchStart + batchSize)
                         .mapToObj(batchStart -> prepareBatch(list, batchStart, batchSize))
-                        .reduce(CompletableFutureExample::combineFeatures)
+                        .reduce(CompletableFutureEx::combineFeatures)
                         .get();
 
         // Wait for the result to be computed
@@ -53,7 +53,7 @@ public class CompletableFutureExample {
             CompletableFuture<Map<String, Long>> firstFeature,
             CompletableFuture<Map<String, Long>> secondFeature) {
 
-        return firstFeature.thenCombineAsync(secondFeature, CompletableFutureExample::mergeCounts);
+        return firstFeature.thenCombineAsync(secondFeature, CompletableFutureEx::mergeCounts);
     }
 
     private static Map<String, Long> mergeCounts(Map<String, Long> stringLongMap, Map<String, Long> stringLongMap2) {
