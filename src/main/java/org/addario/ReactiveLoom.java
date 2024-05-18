@@ -8,10 +8,10 @@ import java.util.UUID;
 
 public class ReactiveLoom {
     public static void main(String[] args) throws InterruptedException {
-        var quantity = 2_000_000; // Generating 2 million payment records should take around 10 seconds and will use about 3.9 GB of memory
+        var quantity = 3_000_000; // Generating 3 million payment records should take around 20 seconds and will use about 3 GB of memory
         var batchSize = 100_000; // quantity / batchSize = how many groups of payments to process in parallel
         var fileName = STR."\{UUID.randomUUID().toString()}.txt"; // Using Java 21 preview features so must be compiled/run with --enable-preview
-        var file = new File(fileName); // A file with 2 million records will take around 3.3 GB
+        var file = new File(fileName); // A file with 3 million records will take around 2.5 GB
         System.setProperty("reactor.schedulers.defaultBoundedElasticOnVirtualThreads", "true"); // Use virtual threads (project Loom) in bounded elastic scheduler
 
         ReactorDebugAgent.init(); // Dev friendly reactive stack traces

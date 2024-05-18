@@ -16,7 +16,7 @@ public class TimedExecution {
         System.out.println("------------------------------------------------------------------------------------------- createPaymentsList array");
         System.out.println(STR."\{LocalDateTime.now()}: Executing createPaymentsList on \{Thread.currentThread().getName()} thread [virtual=\{Thread.currentThread().isVirtual()}]");
         start = System.currentTimeMillis();
-        var paymentsList = IntStream.range(0, quantity).mapToObj(_ -> new Payment().toString()).toList();
+        var paymentsList = IntStream.range(0, quantity).mapToObj(_ -> new RecordEx().toString()).toList();
         stop = System.currentTimeMillis();
         System.out.println(STR."paymentsList array with \{String.format("%,d", quantity)} elements created in \{String.format("%,d", (stop - start))} ms");
 
