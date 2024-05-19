@@ -10,8 +10,8 @@
     <description>Comparing Project Reactor vs Loom and getting them to work together</description>
 
     <properties>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <blockhound.version>1.0.9.RELEASE</blockhound.version>
         <exec.mainClass>org.addario.ReactiveLoom</exec.mainClass>
@@ -73,6 +73,29 @@
                         <compilerArgs>
                             <arg>--enable-preview</arg>
                         </compilerArgs>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.2.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <configuration>
+                        <executable>java</executable>
+                        <arguments>
+                            <argument>--enable-preview</argument>
+                            <argument>-XX:+AllowRedefinitionToAddDeleteMethods</argument>
+                            <argument>-XX:+EnableDynamicAgentLoading</argument>
+                            <argument>-classpath</argument>
+                            <classpath/>
+                            <argument>org.addario.ReactiveLoom</argument>
+                        </arguments>
                     </configuration>
                 </plugin>
                 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
