@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.addario</groupId>
-    <artifactId>reactiveLoom</artifactId>
+    <artifactId>reactive-loom</artifactId>
     <version>1.0-SNAPSHOT</version>
     <description>Comparing Project Reactor vs Loom and getting them to work together</description>
 
