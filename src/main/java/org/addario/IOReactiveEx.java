@@ -18,7 +18,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class IoReactiveEx {
+public class IOReactiveEx {
     private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
     public String getName(String fileName, int batchSize) throws IOException {
@@ -29,9 +29,9 @@ public class IoReactiveEx {
                 .runOn(Schedulers.parallel())
                 .doOnNext(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch..."))
                 // Aggregate intermediate counts asynchronously
-                .flatMap(IoReactiveEx::processBatch)
+                .flatMap(IOReactiveEx::processBatch)
                 .sequential()
-                .reduce(new HashMap<>(), IoReactiveEx::mergeIntermediateCount)
+                .reduce(new HashMap<>(), IOReactiveEx::mergeIntermediateCount)
                 .flatMapIterable(HashMap::entrySet);
 
         return MathFlux.max(finalCounts, Map.Entry.comparingByValue())

@@ -119,7 +119,7 @@ public class TimedExecution {
     static void ioReactive(String fileName, int batchSize) {
         System.out.println("------------------------------------------------------------------------------------------- IO Reactive Example");
         System.out.println(STR."\{LocalDateTime.now()}: Executing ioReactiveEx.getName on \{Thread.currentThread().getName()} thread [virtual=\{Thread.currentThread().isVirtual()}]");
-        var ioReactiveExample = new IoReactiveEx();
+        var ioReactiveExample = new IOReactiveEx();
         start = System.currentTimeMillis();
 
         try {
@@ -135,7 +135,7 @@ public class TimedExecution {
     static void ioLoom(String fileName, int batchSize) {
         System.out.println("------------------------------------------------------------------------------------------- IO Project Loom Example");
         System.out.println(STR."\{LocalDateTime.now()}: Executing ioLoomEx.getName on \{Thread.currentThread().getName()} thread [virtual=\{Thread.currentThread().isVirtual()}]");
-        var ioLoomExample = new IoLoomEx();
+        var ioLoomExample = new IOLoomEx();
         start = System.currentTimeMillis();
         System.out.print(STR."The most frequent IO Virtual Threads example name is \{ioLoomExample.getName(fileName, batchSize)}");
         stop = System.currentTimeMillis();

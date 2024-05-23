@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.StructuredTaskScope;
 import java.util.regex.Pattern;
 
-public class IoLoomEx {
+public class IOLoomEx {
     private static final Pattern pattern = Pattern.compile("(?<=first_name=).*?(?=,)");
 
     public String getName(String fileName, int batchSize) {
