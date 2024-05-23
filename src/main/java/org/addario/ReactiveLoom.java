@@ -28,7 +28,7 @@ public class ReactiveLoom {
         TimedExecution.ioReactive(fileName, batchSize);
         TimedExecution.ioLoom(fileName, batchSize);
         var stop = System.currentTimeMillis();
-        System.out.println(STR."\nFinished ReactiveLoom test with \{String.format("%,d", quantity)} elements in \{String.format("%,d", (stop - start))} ms");
+        System.out.println(STR."\nFinished reactive-loom test with \{String.format("%,d", quantity)} elements in \{String.format("%,d", (stop - start))} ms");
 
         if (file.exists())
             if (file.delete())
