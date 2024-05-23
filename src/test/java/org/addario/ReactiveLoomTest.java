@@ -18,7 +18,7 @@ class ReactiveLoomTest {
     private final int batchSize = 100;
     private final String fileName = STR."\{UUID.randomUUID().toString()}.txt";
     private final List<String> namesList = RecordEx.names;
-    private final List<String> paymentsList = TimedExecution.createPaymentsList(quantity);
+    private final List<String> paymentsList = TimedExecution.createRecordsList(quantity);
 
     @Test
     void baseCase_getName() {
@@ -70,7 +70,7 @@ class ReactiveLoomTest {
         var file = new File(fileName);
         var ioReactive = new IOReactiveEx();
 
-        TimedExecution.createPaymentsFile(fileName, paymentsList, file);
+        TimedExecution.createRecordsFile(fileName, paymentsList, file);
         assertThat(ioReactive.getName(fileName, batchSize)).isIn(namesList);
         assertThat(file.delete()).isTrue();
     }
@@ -80,7 +80,7 @@ class ReactiveLoomTest {
         var file = new File(fileName);
         var ioLoom = new IOLoomEx();
 
-        TimedExecution.createPaymentsFile(fileName, paymentsList, file);
+        TimedExecution.createRecordsFile(fileName, paymentsList, file);
         assertThat(ioLoom.getName(fileName, batchSize)).isIn(namesList);
         assertThat(file.delete()).isTrue();
     }
@@ -95,7 +95,7 @@ class ReactiveLoomTest {
         var reactiveName = (new ReactiveEx()).getName(paymentsList, batchSize);
         var loomName = (new LoomEx()).getName(paymentsList, batchSize);
 
-        TimedExecution.createPaymentsFile(fileName, paymentsList, file);
+        TimedExecution.createRecordsFile(fileName, paymentsList, file);
 
         var ioReactiveName = (new IOReactiveEx()).getName(fileName, batchSize);
         var ioLoomName = (new IOLoomEx()).getName(fileName, batchSize);

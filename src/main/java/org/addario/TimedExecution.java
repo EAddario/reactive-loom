@@ -12,9 +12,9 @@ public class TimedExecution {
     private static long stop;
     private static long start;
 
-    static List<String> createPaymentsList(int quantity) {
-        System.out.println("------------------------------------------------------------------------------------------- createPaymentsList array");
-        System.out.println(STR."\{LocalDateTime.now()}: Executing createPaymentsList on \{Thread.currentThread().getName()} thread [virtual=\{Thread.currentThread().isVirtual()}]");
+    static List<String> createRecordsList(int quantity) {
+        System.out.println("------------------------------------------------------------------------------------------- Create records array");
+        System.out.println(STR."\{LocalDateTime.now()}: Executing createRecordsList on \{Thread.currentThread().getName()} thread [virtual=\{Thread.currentThread().isVirtual()}]");
         start = System.currentTimeMillis();
         var paymentsList = new ArrayList<String>(quantity); // Better performance than IntStream.range(0, quantity).mapToObj(_ -> new RecordEx().toString()).toList()
 
@@ -22,14 +22,14 @@ public class TimedExecution {
             paymentsList.add(new RecordEx().toString());
 
         stop = System.currentTimeMillis();
-        System.out.println(STR."paymentsList array with \{String.format("%,d", quantity)} elements created in \{String.format("%,d", (stop - start))} ms");
+        System.out.println(STR."Records list with \{String.format("%,d", quantity)} elements created in \{String.format("%,d", (stop - start))} ms");
 
         return paymentsList;
     }
 
-    static void createPaymentsFile(String fileName, List<String> paymentsList, File file) {
-        System.out.println("------------------------------------------------------------------------------------------- savePaymentsList file");
-        System.out.println(STR."\{LocalDateTime.now()}: Executing savePaymentsList on \{Thread.currentThread().getName()} thread [virtual=\{Thread.currentThread().isVirtual()}]");
+    static void createRecordsFile(String fileName, List<String> paymentsList, File file) {
+        System.out.println("------------------------------------------------------------------------------------------- Create records file");
+        System.out.println(STR."\{LocalDateTime.now()}: Executing createRecordsFile on \{Thread.currentThread().getName()} thread [virtual=\{Thread.currentThread().isVirtual()}]");
         BufferedWriter bufferedWriter;
         start = System.currentTimeMillis();
 
@@ -53,7 +53,7 @@ public class TimedExecution {
         }
 
         stop = System.currentTimeMillis();
-        System.out.println(STR."paymentsList file size \{String.format("%,d", (file.length() / 1024^2))} MB created in \{String.format("%,d", (stop - start))} ms");
+        System.out.println(STR."Records file size \{String.format("%,d", (file.length() / 1024^2))} MB created in \{String.format("%,d", (stop - start))} ms");
     }
 
     static void baseCase(List<String> paymentsList) {
