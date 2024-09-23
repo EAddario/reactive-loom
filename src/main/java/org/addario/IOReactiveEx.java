@@ -27,7 +27,7 @@ public class IOReactiveEx {
                 .buffer(batchSize)
                 .parallel()
                 .runOn(Schedulers.parallel())
-                .doOnNext(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch..."))
+                .doOnNext(_ -> System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Preparing batch..."))
                 // Aggregate intermediate counts asynchronously
                 .flatMap(IOReactiveEx::processBatch)
                 .sequential()
@@ -47,7 +47,7 @@ public class IOReactiveEx {
                 .groupBy(Function.identity())
                 .flatMap(group -> group.count().map(count -> Tuples.of(group.key(), count)))
                 .collectMap(Tuple2::getT1, Tuple2::getT2)
-                .doOnSubscribe(_ -> System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch..."))
+                .doOnSubscribe(_ -> System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Processing batch..."))
                 .subscribeOn(Schedulers.boundedElastic());
     }
 

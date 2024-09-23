@@ -18,7 +18,7 @@ public class ThreadEx {
             final var batch = list.subList(i, batchEnd);
 
             // Split into batches
-            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
+            System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Preparing batch...");
             final var task = new CountTask(batch, finalCounts);
             tasks.add(task);
             task.setDaemon(true);
@@ -51,7 +51,7 @@ public class ThreadEx {
         @Override
         public void run() {
             Map<String, Long> localCounts = new Hashtable<>();
-            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+            System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Processing batch...");
 
             for (var name : batch) {
                 var matcher = pattern.matcher(name);

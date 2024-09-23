@@ -31,12 +31,12 @@ public class IOLoomEx {
             return batchScope.mostFrequentName();
         } catch (Exception e) {
 
-            return STR."Error: \{e.getMessage()}";
+            return "Error: " + e.getMessage();
         }
     }
 
     private static ArrayList<String> prepareBatch(int batchSize, Iterator<String> iterator) {
-        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
+        System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Preparing batch...");
         ArrayList<String> batch = new ArrayList<>(batchSize);
 
         while (iterator.hasNext() && batch.size() < batchSize) {
@@ -49,7 +49,7 @@ public class IOLoomEx {
     private static Callable<Map<String, Long>> prepareBatchProcessing(List<String> batch) {
         return () -> {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
-            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+            System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Processing batch...");
 
             for (var name : batch) {
                 var matcher = pattern.matcher(name);
@@ -71,7 +71,7 @@ public class IOLoomEx {
             switch (subtask.state()) {
                 case UNAVAILABLE -> System.out.println("Error: Subtask is unavailable");
                 case SUCCESS -> intermediateResult = subtask.get();
-                case FAILED -> System.out.println(STR."Error: \{subtask.exception().getMessage()}");
+                case FAILED -> System.out.println("Error: " + subtask.exception().getMessage());
             }
 
             for (var stringLongEntry : intermediateResult.entrySet()) {

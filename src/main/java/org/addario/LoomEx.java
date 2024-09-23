@@ -22,7 +22,7 @@ public class LoomEx {
 
             return scope.mostFrequentName();
         } catch (Exception e) {
-            return STR."Error: \{e.getMessage()}";
+            return "Error: " + e.getMessage();
         }
     }
 
@@ -30,7 +30,7 @@ public class LoomEx {
         return () -> {
             Map<String, Long> localCounts = new ConcurrentHashMap<>();
             var batchEnd = Math.min((batchStart + batchSize), list.size());
-            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
+            System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Preparing batch...");
 
             for (String name : list.subList(batchStart, batchEnd)) {
                 var matcher = pattern.matcher(name);
@@ -49,12 +49,12 @@ public class LoomEx {
         @Override
         protected void handleComplete(Subtask<? extends Map<String, Long>> subtask) {
             Map<String, Long> intermediateResult = new HashMap<>();
-            System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+            System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Processing batch...");
 
             switch (subtask.state()) {
                 case UNAVAILABLE -> System.out.println("Error: Subtask is unavailable");
                 case SUCCESS -> intermediateResult = subtask.get();
-                case FAILED -> System.out.println(STR."Error: \{subtask.exception().getMessage()}");
+                case FAILED -> System.out.println("Error: " + subtask.exception().getMessage());
             }
 
             for (var stringLongEntry : intermediateResult.entrySet()) {

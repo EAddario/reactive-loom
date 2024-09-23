@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 class ReactiveLoomTest {
     private final int quantity = 1_000;
     private final int batchSize = 100;
-    private final String fileName = STR."\{UUID.randomUUID().toString()}.txt";
+    private final String fileName = UUID.randomUUID() + ".txt";
     private final List<String> namesList = RecordEx.names;
     private final List<String> paymentsList = TimedExecution.createRecordsList(quantity);
 
@@ -117,8 +117,8 @@ class ReactiveLoomTest {
         var file = new File(fileName);
         if (file.exists())
             if (file.delete())
-                System.out.println(STR."Failed to delete file: \{fileName}");
+                System.out.println("Failed to delete file: " + fileName);
             else
-                System.out.println(STR."Failed to delete file: \{fileName}");
+                System.out.println("Failed to delete file: " + fileName);
     }
 }

@@ -35,7 +35,7 @@ public class CompletableFutureEx {
         return CompletableFuture.supplyAsync(() -> {
                     Map<String, Long> localCounts = new ConcurrentHashMap<>();
                     var batchEnd = Math.min((batchStart + batchSize), list.size());
-                    System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Preparing batch...");
+                    System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Preparing batch...");
 
                     for (String name : list.subList(batchStart, batchEnd)) {
                         var matcher = pattern.matcher(name);
@@ -57,7 +57,7 @@ public class CompletableFutureEx {
     }
 
     private static Map<String, Long> mergeCounts(Map<String, Long> stringLongMap, Map<String, Long> stringLongMap2) {
-        System.out.println(STR."\{LocalDateTime.now()}: \{Thread.currentThread().getName()} [virtual=\{Thread.currentThread().isVirtual()}] Processing batch...");
+        System.out.println(LocalDateTime.now() + ": " + Thread.currentThread().getName() + " [virtual=" + Thread.currentThread().isVirtual() + "] Processing batch...");
 
         Map<String, Long> accumulator = new HashMap<>(stringLongMap);
         stringLongMap2.forEach((key, value) -> accumulator.compute(key, (_, c) -> c == null ? value : c + value));
