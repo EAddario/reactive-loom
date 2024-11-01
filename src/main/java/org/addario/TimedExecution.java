@@ -56,89 +56,115 @@ public class TimedExecution {
         System.out.println("Records file size " + String.format("%,d", (file.length() / 1024^2)) + " MB created in " + String.format("%,d", (stop - start)) + " ms");
     }
 
-    static void baseCase(List<String> paymentsList) {
+    static String baseCase(List<String> paymentsList) {
         System.out.println("------------------------------------------------------------------------------------------- Base Case");
         System.out.println(LocalDateTime.now() + ": Executing baseCase.getName on " + Thread.currentThread().getName() + " thread [virtual=" + Thread.currentThread().isVirtual() + "]");
         var baseCase = new BaseCase();
         start = System.currentTimeMillis();
-        System.out.print("The most frequent base case name is " + baseCase.getName(paymentsList));
+        var name = baseCase.getName(paymentsList);
+        System.out.print("The most frequent base case name is " + name);
         stop = System.currentTimeMillis();
         System.out.println(", calculated in " + String.format("%,d", (stop - start)) + " ms");
+
+        return name;
     }
 
-    static void thread(List<String> paymentsList, int batchSize) throws InterruptedException {
+    static String thread(List<String> paymentsList, int batchSize) throws InterruptedException {
         System.out.println("------------------------------------------------------------------------------------------- Thread Example");
         System.out.println(LocalDateTime.now() + ": Executing threadEx.getName on " + Thread.currentThread().getName() + " thread [virtual=" + Thread.currentThread().isVirtual() + "]");
         var threadExample = new ThreadEx();
         start = System.currentTimeMillis();
-        System.out.print("The most frequent Thread example name is " + threadExample.getName(paymentsList, batchSize));
+        var name = threadExample.getName(paymentsList, batchSize);
+        System.out.print("The most frequent Thread example name is " + name);
         stop = System.currentTimeMillis();
         System.out.println(", calculated in " + String.format("%,d", (stop - start)) + " ms");
+
+        return name;
     }
 
-    static void callable(List<String> paymentsList, int batchSize) throws InterruptedException {
+    static String callable(List<String> paymentsList, int batchSize) throws InterruptedException {
         System.out.println("------------------------------------------------------------------------------------------- Callable Example");
         System.out.println(LocalDateTime.now() + ": Executing callableEx.getName on " + Thread.currentThread().getName() + " thread [virtual=" + Thread.currentThread().isVirtual() + "]");
         var callableExample = new CallableEx();
         start = System.currentTimeMillis();
-        System.out.print("The most frequent Callable example name is " + callableExample.getName(paymentsList, batchSize));
+        var name = callableExample.getName(paymentsList, batchSize);
+        System.out.print("The most frequent Callable example name is " + name);
         stop = System.currentTimeMillis();
         System.out.println(", calculated in " + String.format("%,d", (stop - start)) + " ms");
+
+        return name;
     }
 
-    static void completableFuture(List<String> paymentsList, int batchSize) {
+    static String completableFuture(List<String> paymentsList, int batchSize) {
         System.out.println("------------------------------------------------------------------------------------------- CompletableFuture Example");
         System.out.println(LocalDateTime.now() + ": Executing completableFutureEx.getName on " + Thread.currentThread().getName() + " thread [virtual=" + Thread.currentThread().isVirtual() + "]");
         var completableFutureExample = new CompletableFutureEx();
         start = System.currentTimeMillis();
-        System.out.print("The most frequent CompletableFuture example name is " + completableFutureExample.getName(paymentsList, batchSize));
+        var name = completableFutureExample.getName(paymentsList, batchSize);
+        System.out.print("The most frequent CompletableFuture example name is " + name);
         stop = System.currentTimeMillis();
         System.out.println(", calculated in " + String.format("%,d", (stop - start)) + " ms");
+
+        return name;
     }
 
-    static void reactive(List<String> paymentsList, int batchSize) throws InterruptedException {
+    static String reactive(List<String> paymentsList, int batchSize) throws InterruptedException {
         System.out.println("------------------------------------------------------------------------------------------- Reactive Example");
         System.out.println(LocalDateTime.now() + ": Executing reactiveEx.getName on " + Thread.currentThread().getName() + " thread [virtual=" + Thread.currentThread().isVirtual() + "]");
         var reactiveExample = new ReactiveEx();
         start = System.currentTimeMillis();
-        System.out.print("The most frequent Reactive example name is " + reactiveExample.getName(paymentsList, batchSize));
+        var name = reactiveExample.getName(paymentsList, batchSize);
+        System.out.print("The most frequent Reactive example name is " + name);
         stop = System.currentTimeMillis();
         System.out.println(", calculated in " + String.format("%,d", (stop - start)) + " ms");
+
+        return name;
     }
 
-    static void loom(List<String> paymentsList, int batchSize) {
+    static String loom(List<String> paymentsList, int batchSize) {
         System.out.println("------------------------------------------------------------------------------------------- Project Loom Example");
         System.out.println(LocalDateTime.now() + ": Executing loomEx.getName on " + Thread.currentThread().getName() + " thread [virtual=" + Thread.currentThread().isVirtual() + "]");
         var loomExample = new LoomEx();
         start = System.currentTimeMillis();
-        System.out.print("The most frequent Virtual Threads example name is " + loomExample.getName(paymentsList, batchSize));
+        var name = loomExample.getName(paymentsList, batchSize);
+        System.out.print("The most frequent Virtual Threads example name is " + name);
         stop = System.currentTimeMillis();
         System.out.println(", calculated in " + String.format("%,d", (stop - start)) + " ms");
+
+        return name;
     }
 
-    static void ioReactive(String fileName, int batchSize) {
+    static String ioReactive(String fileName, int batchSize) {
         System.out.println("------------------------------------------------------------------------------------------- IO Reactive Example");
         System.out.println(LocalDateTime.now() + ": Executing ioReactiveEx.getName on " + Thread.currentThread().getName() + " thread [virtual=" + Thread.currentThread().isVirtual() + "]");
         var ioReactiveExample = new IOReactiveEx();
         start = System.currentTimeMillis();
+        String name;
 
         try {
-            System.out.print("The most frequent IO Reactive example name is " + ioReactiveExample.getName(fileName, batchSize));
+            name = ioReactiveExample.getName(fileName, batchSize);
+            System.out.print("The most frequent IO Reactive example name is " + name);
         } catch (IOException e) {
+            name = "Error executing ioReactiveEx";
             System.out.println("Error executing ioReactiveEx: " + e.getMessage());
         }
 
         stop = System.currentTimeMillis();
         System.out.println(", calculated in " + String.format("%,d", (stop - start)) + " ms");
+
+        return name;
     }
 
-    static void ioLoom(String fileName, int batchSize) {
+    static String ioLoom(String fileName, int batchSize) {
         System.out.println("------------------------------------------------------------------------------------------- IO Project Loom Example");
         System.out.println(LocalDateTime.now() + ": Executing ioLoomEx.getName on " + Thread.currentThread().getName() + " thread [virtual=" + Thread.currentThread().isVirtual() + "]");
         var ioLoomExample = new IOLoomEx();
         start = System.currentTimeMillis();
-        System.out.print("The most frequent IO Virtual Threads example name is " + ioLoomExample.getName(fileName, batchSize));
+        var name = ioLoomExample.getName(fileName, batchSize);
+        System.out.print("The most frequent IO Virtual Threads example name is " + name);
         stop = System.currentTimeMillis();
         System.out.println(", calculated in " + String.format("%,d", (stop - start)) + " ms");
+
+        return name;
     }
 }
