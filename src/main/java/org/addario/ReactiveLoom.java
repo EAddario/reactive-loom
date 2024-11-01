@@ -19,16 +19,28 @@ public class ReactiveLoom {
         var start = System.currentTimeMillis();
         var paymentsList = TimedExecution.createRecordsList(quantity);
         TimedExecution.createRecordsFile(fileName, paymentsList, file);
-        TimedExecution.baseCase(paymentsList);
-        TimedExecution.thread(paymentsList, batchSize);
-        TimedExecution.callable(paymentsList, batchSize);
-        TimedExecution.completableFuture(paymentsList, batchSize);
-        TimedExecution.reactive(paymentsList, batchSize);
-        TimedExecution.loom(paymentsList, batchSize);
-        TimedExecution.ioReactive(fileName, batchSize);
-        TimedExecution.ioLoom(fileName, batchSize);
+        var baseCase = TimedExecution.baseCase(paymentsList);
+        var thread = TimedExecution.thread(paymentsList, batchSize);
+        var callable = TimedExecution.callable(paymentsList, batchSize);
+        var completableFuture = TimedExecution.completableFuture(paymentsList, batchSize);
+        var reactive = TimedExecution.reactive(paymentsList, batchSize);
+        var loom = TimedExecution.loom(paymentsList, batchSize);
+        var ioReactive = TimedExecution.ioReactive(fileName, batchSize);
+        var ioLoom = TimedExecution.ioLoom(fileName, batchSize);
         var stop = System.currentTimeMillis();
-        System.out.println("\nFinished reactive-loom test with " + String.format("%,d", quantity) + " elements in " + String.format("%,d", (stop - start)) + " ms");
+
+        if (
+                baseCase.equals(thread) &&
+                baseCase.equals(callable) &&
+                baseCase.equals(completableFuture) &&
+                baseCase.equals(reactive) &&
+                baseCase.equals(loom) &&
+                baseCase.equals(ioReactive) &&
+                baseCase.equals(ioLoom)
+        )
+            System.out.println("\nFinished reactive-loom test with " + String.format("%,d", quantity) + " elements in " + String.format("%,d", (stop - start)) + " ms");
+        else
+            System.out.println("\nError! Tests returned different names");
 
         if (file.exists())
             if (file.delete())
